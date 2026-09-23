@@ -27,8 +27,6 @@ func EniVar(n int, exp int, mod int, remainders []int) int {
 	return val
 }
 
-func EniCycle
-
 func Eni(n int, exp int, mod int) int {
 	var remainders []int
 	return EniVar(n, exp, mod, remainders)

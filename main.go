@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 
+	advent2025 "example.com/advent/advent-2025"
 	"example.com/advent/lib"
 )
 
@@ -115,8 +116,9 @@ func main() {
 	for _, n := range testValues {
 		res := lib.EniSum(n.a, n.b, n.c, n.x, n.y, n.z, n.m)
 		results = append(results, res)
-		fmt.Printf("{%d,%d,%d,%d,%d,%d,%d,%d}, \n", n.a, n.b, n.c, n.x, n.y, n.z, n.m, res)
 	}
 
 	fmt.Println(slices.Max(results))
+
+	advent2025.Run01()
 }
