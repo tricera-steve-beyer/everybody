@@ -1,0 +1,13 @@
+format: gofmt
+write: false
+verbose: false
+reorder-types: false
+diff: false
+order:
+- const
+- interface
+- type
+- var
+- init
+- main
+- func

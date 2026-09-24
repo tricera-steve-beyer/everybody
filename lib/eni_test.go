@@ -6,8 +6,7 @@ import (
 )
 
 func TestEni(t *testing.T) {
-
-	var tests = []struct {
+	tests := []struct {
 		n, exp, mod int
 		want        int
 	}{
@@ -44,7 +43,7 @@ func TestEni(t *testing.T) {
 }
 
 func TestEniFormula(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		a, b, c, x, y, z, m int
 		want                int
 	}{
@@ -80,7 +79,7 @@ func TestEniFormula(t *testing.T) {
 }
 
 func TestEniPart2(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		n, exp, mod int
 		want        int
 	}{
@@ -99,8 +98,9 @@ func TestEniPart2(t *testing.T) {
 		})
 	}
 }
+
 func TestEniPart2Formula(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		a, b, c, x, y, z, m int
 		want                int
 	}{

@@ -6,7 +6,7 @@ import (
 )
 
 func TestRotate(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		Min, Max, Current int
 		Input             []string
 		WantCurrent       int

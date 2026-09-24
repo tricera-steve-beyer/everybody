@@ -19,7 +19,6 @@ func EniVar(n int, exp int, mod int, remainders []int) int {
 	}
 
 	val, err := concatInts(remainders)
-
 	if err != nil {
 		return 0
 	}

@@ -8,6 +8,11 @@ import (
 	"strconv"
 )
 
+const (
+	Left Direction = iota
+	Right
+)
+
 type Dial struct {
 	Min      int
 	Max      int
@@ -15,23 +20,14 @@ type Dial struct {
 	CntZeros int
 }
 
-type Direction int
-
-const (
-	Left = iota
-	Right
-)
-
 func (d *Dial) Rotate(direction Direction, steps int) {
 	switch direction {
 	case Left:
 		n := d.Max + 1
 		d.Current = ((d.Current-steps)%n + n) % n
-		fmt.Println("Rotate Lft: ", d.Current)
 	case Right:
 		// including the lower boundary e.g.: 0-99 are 100 numbers
 		d.Current = (d.Current + steps) % (d.Max + 1)
-		fmt.Println("Rotate Rgt: ", d.Current)
 	default:
 		panic("What are you doing here!!?!")
 	}
@@ -39,6 +35,28 @@ func (d *Dial) Rotate(direction Direction, steps int) {
 	if d.Current == 0 {
 		d.CntZeros += 1
 	}
+}
+
+type Direction int
+
+func ParseLine(content string) (Direction, int) {
+	dirToken := content[:1]
+	var dir Direction
+
+	switch dirToken {
+	case "L":
+		dir = Left
+	case "R":
+		dir = Right
+	default:
+		panic("Could not read the direction from line. aborting!")
+	}
+
+	stepsToken := content[1:]
+	steps, err := strconv.Atoi(stepsToken)
+	check(err)
+
+	return dir, steps
 }
 
 func Run01() {
@@ -61,26 +79,6 @@ func Run01() {
 
 	fmt.Printf("Current dial display: %d \n", dial.Current)
 	fmt.Printf("CntZeros: %d \n", dial.CntZeros)
-}
-
-func ParseLine(content string) (Direction, int) {
-	dirToken := content[:1]
-	var dir Direction
-
-	switch dirToken {
-	case "L":
-		dir = Left
-	case "R":
-		dir = Right
-	default:
-		panic("Could not read the direction from line. aborting!")
-	}
-
-	stepsToken := content[1:]
-	steps, err := strconv.Atoi(stepsToken)
-	check(err)
-
-	return dir, steps
 }
 
 func check(e error) {
