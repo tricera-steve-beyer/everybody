@@ -1,5 +1,7 @@
 package part2
 
+import "sync"
+
 type State int
 
 const (
@@ -21,6 +23,15 @@ type Program struct {
 	In     chan<- int
 	Out    <-chan int
 	CntSnd int
+	Mon    *Monitor
+}
+
+type Monitor struct {
+	mu      sync.Mutex
+	waiting int
+	pending int
+	closed  bool
+	done    chan struct{}
 }
 
 type Instruction struct {

@@ -9,10 +9,38 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
-func NewProgram(id int, in chan int, out chan int) *Program {
+func NewMonitor() *Monitor {
+	return &Monitor{done: make(chan struct{})}
+}
+
+// wait marks a program as blocked and closes done if every program is
+// blocked and no value is in flight.
+func (mon *Monitor) wait() {
+	mon.mu.Lock()
+	defer mon.mu.Unlock()
+	mon.waiting++
+	if mon.waiting == 2 && mon.pending == 0 && !mon.closed {
+		mon.closed = true
+		close(mon.done)
+	}
+}
+
+func (mon *Monitor) sent() {
+	mon.mu.Lock()
+	mon.pending++
+	mon.mu.Unlock()
+}
+
+func (mon *Monitor) received() {
+	mon.mu.Lock()
+	mon.pending--
+	mon.waiting--
+	mon.mu.Unlock()
+}
+
+func NewProgram(id int, in chan int, out chan int, mon *Monitor) *Program {
 	p := Program{
 		Id:     id,
 		Regs:   make(map[string]*Register),
@@ -21,6 +49,7 @@ func NewProgram(id int, in chan int, out chan int) *Program {
 		In:     in,
 		Out:    out,
 		CntSnd: 0,
+		Mon:    mon,
 	}
 
 	p.AddInstruction(fmt.Sprintf("set p %d", id))
@@ -83,6 +112,13 @@ func (m *Program) Run() iter.Seq2[int, Instruction] {
 				return
 			}
 		}
+
+		// a program that ended on its own is blocked forever for the other one
+		select {
+		case <-m.Mon.done:
+		default:
+			m.Mon.wait()
+		}
 	}
 }
 
@@ -118,10 +154,12 @@ func (m *Program) mul(reg *Register, val int) {
 }
 
 func (m *Program) rcv(reg *Register, _ int) {
+	m.Mon.wait()
 	select {
 	case val := <-m.Out:
 		reg.Val = val
-	case <-time.After(1 * time.Second):
+		m.Mon.received()
+	case <-m.Mon.done:
 		m.Status = Terminated
 	}
 }
@@ -143,6 +181,7 @@ func (m *Program) set(reg *Register, val int) {
 }
 
 func (m *Program) snd(reg *Register, _ int) {
+	m.Mon.sent()
 	m.In <- reg.Val
 	m.CntSnd++
 }
@@ -151,8 +190,10 @@ func Run18() {
 	in := make(chan int, 1000)
 	out := make(chan int, 1000)
 
-	prog1 := NewProgram(0, in, out)
-	prog2 := NewProgram(1, out, in)
+	mon := NewMonitor()
+
+	prog1 := NewProgram(0, in, out, mon)
+	prog2 := NewProgram(1, out, in, mon)
 
 	wd, err := os.Getwd()
 	check(err)
