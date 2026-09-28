@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"slices"
-
+	advent2017 "example.com/advent/advent-2017"
 	advent2025 "example.com/advent/advent-2025"
 	"example.com/advent/lib"
 )
@@ -118,7 +116,7 @@ func main() {
 		results = append(results, res)
 	}
 
-	fmt.Println(slices.Max(results))
-
 	advent2025.Run01()
+
+	advent2017.Run18()
 }
