@@ -1,4 +1,4 @@
-package advent2017
+package part1
 
 import (
 	"strings"
@@ -7,22 +7,22 @@ import (
 
 const maxSteps = 1000
 
-func newMachine() *Machine {
-	return &Machine{
+func newMachine() *Program {
+	return &Program{
 		Regs:   make(map[string]*Register),
 		Ins:    make(map[int]Instruction),
 		Status: Running,
 	}
 }
 
-func loadProgram(m *Machine, program []string) {
+func loadProgram(m *Program, program []string) {
 	for _, line := range program {
 		m.AddInstruction(line)
 	}
 }
 
 // runAll executes the program until it ends or maxSteps is reached.
-func runAll(m *Machine) {
+func runAll(m *Program) {
 	steps := 0
 	for range m.Run() {
 		steps++
@@ -101,20 +101,20 @@ func TestResolveValue(t *testing.T) {
 func TestArithmetic(t *testing.T) {
 	tests := []struct {
 		Name  string
-		Fun   func(m *Machine) func(*Register, int)
+		Fun   func(m *Program) func(*Register, int)
 		Start int
 		Val   int
 		Want  int
 	}{
-		{"set", func(m *Machine) func(*Register, int) { return m.set }, 3, 5, 5},
-		{"set negative", func(m *Machine) func(*Register, int) { return m.set }, 3, -2, -2},
-		{"add", func(m *Machine) func(*Register, int) { return m.add }, 3, 5, 8},
-		{"add negative", func(m *Machine) func(*Register, int) { return m.add }, 3, -5, -2},
-		{"mul", func(m *Machine) func(*Register, int) { return m.mul }, 3, 5, 15},
-		{"mul zero", func(m *Machine) func(*Register, int) { return m.mul }, 3, 0, 0},
-		{"mod", func(m *Machine) func(*Register, int) { return m.mod }, 9, 5, 4},
-		{"mod exact", func(m *Machine) func(*Register, int) { return m.mod }, 10, 5, 0},
-		{"mod smaller", func(m *Machine) func(*Register, int) { return m.mod }, 3, 5, 3},
+		{"set", func(m *Program) func(*Register, int) { return m.set }, 3, 5, 5},
+		{"set negative", func(m *Program) func(*Register, int) { return m.set }, 3, -2, -2},
+		{"add", func(m *Program) func(*Register, int) { return m.add }, 3, 5, 8},
+		{"add negative", func(m *Program) func(*Register, int) { return m.add }, 3, -5, -2},
+		{"mul", func(m *Program) func(*Register, int) { return m.mul }, 3, 5, 15},
+		{"mul zero", func(m *Program) func(*Register, int) { return m.mul }, 3, 0, 0},
+		{"mod", func(m *Program) func(*Register, int) { return m.mod }, 9, 5, 4},
+		{"mod exact", func(m *Program) func(*Register, int) { return m.mod }, 10, 5, 0},
+		{"mod smaller", func(m *Program) func(*Register, int) { return m.mod }, 3, 5, 3},
 	}
 
 	for _, tt := range tests {

@@ -1,7 +1,8 @@
 package main
 
 import (
-	advent2017 "example.com/advent/advent-2017"
+	advent2017Part1 "example.com/advent/advent-2017/18_part1"
+	advent2017Part2 "example.com/advent/advent-2017/18_part2"
 	advent2025 "example.com/advent/advent-2025"
 	"example.com/advent/lib"
 )
@@ -118,5 +119,6 @@ func main() {
 
 	advent2025.Run01()
 
-	advent2017.Run18()
+	advent2017Part1.Run18()
+	advent2017Part2.Run18()
 }

@@ -1,4 +1,4 @@
-package advent2017
+package part1
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (m *Machine) AddInstruction(content string) {
+func (m *Program) AddInstruction(content string) {
 	var valKey string
 
 	args := strings.Split(content, " ")
@@ -54,7 +54,7 @@ func (m *Machine) AddInstruction(content string) {
 	m.Ins[len(m.Ins)] = ins
 }
 
-func (m *Machine) Run() iter.Seq2[int, Instruction] {
+func (m *Program) Run() iter.Seq2[int, Instruction] {
 	return func(yield func(int, Instruction) bool) {
 		for m.Status != Terminated && m.CurIns < len(m.Ins) {
 			ins := m.Ins[m.CurIns]
@@ -68,11 +68,11 @@ func (m *Machine) Run() iter.Seq2[int, Instruction] {
 	}
 }
 
-func (m *Machine) add(reg *Register, val int) {
+func (m *Program) add(reg *Register, val int) {
 	reg.Val += val
 }
 
-func (m *Machine) jgz(reg *Register, val int) {
+func (m *Program) jgz(reg *Register, val int) {
 	if reg.Val <= 0 {
 		return
 	}
@@ -87,7 +87,7 @@ func (m *Machine) jgz(reg *Register, val int) {
 	}
 }
 
-func (m *Machine) mod(reg *Register, val int) {
+func (m *Program) mod(reg *Register, val int) {
 	if val != 0 {
 		reg.Val %= val
 	} else {
@@ -95,11 +95,11 @@ func (m *Machine) mod(reg *Register, val int) {
 	}
 }
 
-func (m *Machine) mul(reg *Register, val int) {
+func (m *Program) mul(reg *Register, val int) {
 	reg.Val *= val
 }
 
-func (m *Machine) rcv(reg *Register, _ int) {
+func (m *Program) rcv(reg *Register, _ int) {
 	if reg.Val == 0 {
 		return
 	}
@@ -111,7 +111,7 @@ func (m *Machine) rcv(reg *Register, _ int) {
 	m.Status = Terminated
 }
 
-func (m *Machine) resolveValue(valKey string) int {
+func (m *Program) resolveValue(valKey string) int {
 	if val, err := strconv.Atoi(valKey); err == nil {
 		return val
 	}
@@ -123,16 +123,16 @@ func (m *Machine) resolveValue(valKey string) int {
 	return 0
 }
 
-func (m *Machine) set(reg *Register, val int) {
+func (m *Program) set(reg *Register, val int) {
 	reg.Val = val
 }
 
-func (m *Machine) snd(reg *Register, _ int) {
+func (m *Program) snd(reg *Register, _ int) {
 	m.LastSend = reg.Val
 }
 
 func Run18() {
-	machine := Machine{
+	machine := Program{
 		Regs:   make(map[string]*Register),
 		Ins:    make(map[int]Instruction),
 		Status: Running,

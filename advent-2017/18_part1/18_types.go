@@ -1,4 +1,4 @@
-package advent2017
+package part1
 
 const (
 	Running State = iota
@@ -9,6 +9,7 @@ type Register struct {
 	Key string
 	Val int
 }
+
 type (
 	State       int
 	Instruction struct {
@@ -18,7 +19,7 @@ type (
 	}
 )
 
-type Machine struct {
+type Program struct {
 	Regs     map[string]*Register
 	Ins      map[int]Instruction
 	CurIns   int
