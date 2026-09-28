@@ -1,0 +1,24 @@
+{
+  "name": "Go",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "dev",
+
+  // Persist downloaded modules across container rebuilds
+  "mounts": [
+    "source=go-mod-cache,target=/go/pkg,type=volume"
+  ],
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["golang.go"],
+      "settings": {
+        "go.toolsManagement.autoUpdate": false,
+        "go.lintTool": "staticcheck",
+
+        // gopls formats with gofumpt rules
+        "gopls": { "formatting.gofumpt": true },
+        "[go]": { "editor.formatOnSave": true }
+      }
+    }
+  }
+}
